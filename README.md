@@ -28,6 +28,46 @@ GROUP – based on customer group
 
 NORMAL – default price
 
+Flow Diagram
+   ┌───────────────────────────┐
+   │ Start: Input product_id,  │
+   │ quantity, customer_id     │
+   └─────────────┬─────────────┘
+                 │
+                 ▼
+   ┌───────────────────────────┐
+   │ Normalize product_id to   │
+   │ canonical P### format     │
+   └─────────────┬─────────────┘
+                 │
+                 ▼
+   ┌───────────────────────────┐
+   │ Filter applicable prices: │
+   │ product match & min_qty   │
+   │ match & source/customer   │
+   └─────────────┬─────────────┘
+                 │
+                 ▼
+        ┌────────────────┐
+        │ Applicable list │
+        │ empty?         │
+        └─────┬──────────┘
+              │ Yes → Raise PricingError
+              │
+              ▼ No
+   ┌───────────────────────────┐
+   │ Sort by priority (CUSTOMER│
+   │ > TIER > GROUP > NORMAL)  │
+   │ and price (lowest first)  │
+   └─────────────┬─────────────┘
+                 │
+                 ▼
+   ┌───────────────────────────┐
+   │ Return best price with    │
+   │ product_id, price,        │
+   │ price_type                │
+   └───────────────────────────┘
+
 Running Unit Tests
 
 To run the unit tests:
@@ -45,3 +85,5 @@ Filtering & Sorting: Determines applicable prices and selects the optimal one.
 Type Safety & Consistency: Using Enums and typed dataclasses.
 
 Error Handling: Robust handling of invalid inputs.
+
+OOP: Encapsulation of logic in classes with clear responsibilities.
